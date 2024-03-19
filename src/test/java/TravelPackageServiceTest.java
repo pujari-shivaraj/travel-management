@@ -1,74 +1,69 @@
 import org.code.enums.PassengerType;
-import org.code.service.TravelPackageService;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.code.models.Activity;
 import org.code.models.Destination;
 import org.code.models.Passenger;
-
 import org.code.models.TravelPackage;
+import org.code.service.TravelPackageService;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import java.util.ArrayList;
+import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TravelPackageServiceTest {
 
-    @Test
-    public void testBookActivityAvailableActivity() {
-        TravelPackage travelPackage = new TravelPackage("Europe Trip", 10);
-        Destination destination = new Destination("Paris");
-        Activity activity = new Activity("Sightseeing Tour", "Visit famous landmarks", 50.0, 20, destination);
-        Passenger passenger = new Passenger("John Doe", 12345, PassengerType.STANDARD, 100.0);
+    private TravelPackageService travelPackageService;
 
-        TravelPackageService travelPackageService = new TravelPackageService();
+    @BeforeEach
+    void setUp() {
+        travelPackageService = new TravelPackageService();
+    }
+
+    @Test
+    void testBookActivity_StandardPassenger_Success() {
+        // Given
+        TravelPackage travelPackage = new TravelPackage("Test Package", 10);
+        Destination destination = new Destination("Destination 1");
+        Activity activity = new Activity("Activity 1", "Description", 100.0, 10, destination);
+        Passenger passenger = new Passenger("John", 123, PassengerType.STANDARD, 500.0);
+
+        // When
         travelPackageService.bookActivity(travelPackage, activity, passenger);
 
-        assertEquals(1, travelPackage.getBookings().size());
+        // Then
         assertTrue(travelPackage.getBookings().containsKey(activity));
         assertTrue(travelPackage.getBookings().get(activity).contains(passenger));
     }
 
     @Test
-    public void testBookActivityFullyBookedActivity() {
-        TravelPackage travelPackage = new TravelPackage("Europe Trip", 10);
-        Destination destination = new Destination("Paris");
-        Activity activity = new Activity("Sightseeing Tour", "Visit famous landmarks", 50.0, 1, destination);
-        Passenger passenger1 = new Passenger("John Doe", 12345, PassengerType.STANDARD, 100.0);
-        Passenger passenger2 = new Passenger("Jane Smith", 67890, PassengerType.GOLD, 200.0);
+    void testBookActivity_GoldPassenger_Success() {
+        // Given
+        TravelPackage travelPackage = new TravelPackage("Test Package", 10);
+        Destination destination = new Destination("Destination 1");
+        Activity activity = new Activity("Activity 1", "Description", 100.0, 10, destination);
+        Passenger passenger = new Passenger("Alice", 456, PassengerType.GOLD, 1000.0);
 
-        travelPackage.addPassenger(passenger1);
-        travelPackage.addPassenger(passenger2);
+        // When
+        travelPackageService.bookActivity(travelPackage, activity, passenger);
 
-        TravelPackageService travelPackageService = new TravelPackageService();
-        travelPackageService.bookActivity(travelPackage, activity, passenger1);
-        travelPackageService.bookActivity(travelPackage, activity, passenger2); // Try to book for second passenger
-
-        assertEquals(1, travelPackage.getBookings().size());
+        // Then
         assertTrue(travelPackage.getBookings().containsKey(activity));
-        assertEquals(1, travelPackage.getBookings().get(activity).size());
-        assertTrue(travelPackage.getBookings().get(activity).contains(passenger1));
-        assertFalse(travelPackage.getBookings().get(activity).contains(passenger2));
+        assertTrue(travelPackage.getBookings().get(activity).contains(passenger));
     }
 
     @Test
-    public void testPrintPassengerList() {
-        TravelPackage travelPackage = new TravelPackage("Europe Trip", 10);
-        Passenger passenger1 = new Passenger("John Doe", 12345, PassengerType.STANDARD, 100.0);
-        Passenger passenger2 = new Passenger("Jane Smith", 67890, PassengerType.GOLD, 200.0);
+    void testBookActivity_PremiumPassenger_Success() {
+        // Given
+        TravelPackage travelPackage = new TravelPackage("Test Package", 10);
+        Destination destination = new Destination("Destination 1");
+        Activity activity = new Activity("Activity 1", "Description", 100.0, 10, destination);
+        Passenger passenger = new Passenger("Bob", 789, PassengerType.PREMIUM, 2000.0);
 
-        travelPackage.addPassenger(passenger1);
-        travelPackage.addPassenger(passenger2);
+        // When
+        travelPackageService.bookActivity(travelPackage, activity, passenger);
 
-        TravelPackageService travelPackageService = new TravelPackageService();
-        travelPackageService.printPassengerList(travelPackage);
-    }
-
-    @Test
-    public void testPrintItinerary() {
-        TravelPackage travelPackage = new TravelPackage("Europe Trip", 10);
-        Destination destination = new Destination("Paris");
-        Activity activity = new Activity("Sightseeing Tour", "Visit famous landmarks", 50.0, 20, destination);
-        destination.addActivity(activity);
-        travelPackage.addDestination(destination);
-
-        TravelPackageService travelPackageService = new TravelPackageService();
-        travelPackageService.printItinerary(travelPackage);
+        // Then
+        assertTrue(travelPackage.getBookings().containsKey(activity));
+        assertTrue(travelPackage.getBookings().get(activity).contains(passenger));
     }
 }

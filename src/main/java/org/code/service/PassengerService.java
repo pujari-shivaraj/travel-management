@@ -9,18 +9,25 @@ import java.util.List;
 
 public class PassengerService {
 
+    public void updateBalance(final Passenger passenger, final double balance) {
+        passenger.setBalance(balance);
+    }
+
+    public void addActivityBooking(final Passenger passenger, ActivityBooking activityBooking) {
+        passenger.getActivityBookings().add(activityBooking);
+    }
 
     // Method to handle booking costs based on passenger type
     public void bookActivity(final Passenger passenger, final Activity activity) {
         switch (passenger.getType()) {
             case STANDARD -> {
                 if (passenger.getBalance() >= activity.getCost()) {
-                    passenger.setBalance(passenger.getBalance() - activity.getCost());
+                    this.updateBalance(passenger, passenger.getBalance() - activity.getCost());
                     System.out.println("Activity: " + activity.getName() +
                             " at destination: " + activity.getDestination().getName() +
                             " is booked by passenger name: " + passenger.getName() +
                             " Remaining balance : " + passenger.getBalance());
-                    passenger.addActivityBooking(new ActivityBooking(activity, activity.getCost()));
+                    this.addActivityBooking(passenger, new ActivityBooking(activity, activity.getCost()));
                 } else {
                     System.out.println("Insufficient balance for passenger " + passenger.getName() + " to book activity " + activity.getName());
                 }
@@ -28,13 +35,13 @@ public class PassengerService {
             case GOLD -> {
                 double discountedCost = activity.getCost() * 0.9; // 10% discount
                 if (passenger.getBalance() >= discountedCost) {
-                    passenger.setBalance(discountedCost);
+                    this.updateBalance(passenger, discountedCost);
 
                     System.out.println("Activity: " + activity.getName() +
                             " at destination: " + activity.getDestination().getName() +
                             " is booked by passenger name: " + passenger.getName() +
                             " Remaining balance : " + passenger.getBalance());
-                    passenger.addActivityBooking(new ActivityBooking(activity, discountedCost));
+                    this.addActivityBooking(passenger, new ActivityBooking(activity, discountedCost));
                 } else {
                     System.out.println("Insufficient balance for passenger " + passenger.getName() + " to book activity " + activity.getName());
                 }
@@ -44,7 +51,7 @@ public class PassengerService {
                 System.out.println("Activity: " + activity.getName() +
                         " at destination: " + activity.getDestination().getName() +
                         " is booked by passenger name: " + passenger.getName());
-                passenger.addActivityBooking(new ActivityBooking(activity, 0));
+                this.addActivityBooking(passenger, new ActivityBooking(activity, 0));
             }
         }
     }

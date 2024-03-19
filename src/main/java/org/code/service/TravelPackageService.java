@@ -12,17 +12,30 @@ public class TravelPackageService {
 
     private final PassengerService passengerService;
 
+    private final ActivityService activityService;
+
     public TravelPackageService() {
         this.passengerService = new PassengerService();
+        this.activityService = new ActivityService();
+    }
+
+    public TravelPackage createPackage(final String packageName,
+                                       final int passengerCapacity,
+                                       List<Destination> destinations) {
+        TravelPackage package1 = new TravelPackage(packageName, passengerCapacity);
+        for (Destination destination : destinations) {
+            package1.addDestination(destination);
+        }
+        return package1;
     }
 
     public void bookActivity(final TravelPackage travelPackage,
                              final Activity activity,
                              final Passenger passenger) {
         // Check if activity is fully booked
-        if (activity.isAvailableToBook()) {
+        if (activityService.isAvailableToBook(activity)) {
             passengerService.bookActivity(passenger,activity);
-            activity.book();
+            activityService.book(activity);
             if (travelPackage.getBookings().containsKey(activity)) {
                 List<Passenger> activityBookings = travelPackage.getBookings().get(activity);
                 activityBookings.add(passenger);

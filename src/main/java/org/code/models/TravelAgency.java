@@ -12,8 +12,4 @@ public class TravelAgency {
     public TravelAgency() {
         this.packages = new ArrayList<>();
     }
-
-    public void addTravelPackage(final TravelPackage travelPackage) {
-        packages.add(travelPackage);
-    }
 }

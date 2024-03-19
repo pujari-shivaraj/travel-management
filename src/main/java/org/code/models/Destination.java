@@ -15,8 +15,4 @@ public class Destination {
         this.activities = new ArrayList<>();
     }
 
-    public void addActivity(Activity activity) {
-        activities.add(activity);
-    }
-
 }

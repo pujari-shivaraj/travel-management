@@ -26,7 +26,5 @@ public class Passenger {
         this.balance = balance;
     }
 
-    public void addActivityBooking(ActivityBooking activityBooking) {
-        activityBookings.add(activityBooking);
-    }
+
 }
